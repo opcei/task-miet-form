@@ -1,0 +1,195 @@
+:root {
+	--light-color: #fcfcfc;
+	--dark-color: #171717;
+	--accent-color: dodgerblue;
+
+	--background-color: var(--light-color);
+	--text-color: var(--dark-color);
+	--link-color: var(--accent-color);
+
+	--font-set: BlinkMacSystemFont, -apple-system, 'Segoe UI', Ubuntu, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+	--width: 900px;
+
+	--tab-border-size: 4px;
+
+	--input-color: rgba(0, 0, 0, 0.15);
+}
+
+body {
+	background-color: var(--background-color);
+	color: var(--text-color);
+	margin: 0;
+	font-family: var(--font-set);
+}
+
+#app {
+	margin: 3em auto;
+	box-shadow: 0 0 30px 30px rgba(0, 0, 0, 0.15);
+	box-sizing: border-box;
+	border-radius: 10px;
+	width: var(--width);
+	overflow: hidden;
+
+	display: flex;
+	flex-direction: column;
+}
+
+tab-list {
+	display: flex;
+}
+
+tab-tab {
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 0;
+	padding: 0.5em;
+	text-align: center;
+	font-size: 14pt;
+	border-bottom: var(--tab-border-size) solid transparent;
+	cursor: pointer;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+tab-tab[current-page] {
+	border-bottom: var(--tab-border-size) solid var(--accent-color);
+	color: var(--accent-color);
+}
+
+form {
+	margin: 2em;
+}
+
+form>div {
+	display: flex;
+	flex-direction: column;
+}
+
+.input {
+	display: flex;
+}
+
+.input label {
+	flex-basis: 0;
+	flex-grow: 3;
+	text-align: right;
+	padding: 0 0.7em;
+	align-self: center;
+}
+
+.input label[input-required]::before {
+	content: '* ';
+	color: var(--accent-color);
+}
+
+.input input, .input select, .input textarea {
+	flex-basis: 0;
+	flex-grow: 7;
+	background-color: var(--background-color);
+	border: 1px solid var(--input-color);
+	border-radius: 4px;
+	padding: 0.25em 0.5em;
+	font-size: 11pt;
+	outline: none;
+	height: 20px;
+	margin: 0.2em 0;
+	-webkit-appearance: none;
+}
+
+radio-wrapper {
+	flex-basis: 0;
+	flex-grow: 7;
+
+	display: flex;
+}
+
+radio-button {
+	display: flex;
+}
+
+radio-button span {
+	margin-left: 0.2em;
+}
+
+radio-button+radio-button {
+	margin-left: 1em;
+}
+
+radio-circle {
+	width: 20px;
+	height: 20px;
+	border: 1px solid var(--input-color);
+	border-radius: 50%;
+	box-sizing: border-box;
+}
+
+radio-circle:active {
+	border-color: var(--accent-color);
+}
+
+radio-button[is-active] radio-circle {
+	border: 7px solid var(--accent-color);
+}
+
+.input select {
+	box-sizing: content-box;
+}
+
+.input select[multiple] {
+	height: 60px;
+}
+
+.input textarea {
+	height: 70px;
+}
+
+.input input:focus {
+	border: 1px solid var(--accent-color);
+}
+
+h3 {
+	text-align: center;
+}
+
+button, input[type=submit] {
+	padding: 0.5em 0.75em;
+	background-color: var(--accent-color);
+	color: var(--light-color);
+	cursor: pointer;
+	font-size: 11pt;
+	border: none;
+	border-radius: 5px;
+}
+
+button.center {
+	align-self: center;
+}
+
+.main-buttons {
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: row;
+	margin-top: 2em;
+}
+
+.incorrect-input {
+	border-color: orangered !important;
+}
+
+error-message {
+	background-color: orangered;
+	color: var(--light-color);
+	padding: 1em;
+	text-align: center;
+}
+
+p {
+	text-align: center;
+}
+
+input[type=submit] {
+	margin-left: 0.5em;
+}

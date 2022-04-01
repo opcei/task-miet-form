@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Lab 4</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="libs/jquery-3.3.1.js"></script>
+		<script src="libs/vue-2.5.16.js"></script>
+		<script src="script.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<template v-if="isCorrect">
+				<p>Ваши данные были успешно отправлены.</p>
+				<button class="center" v-on:click.prevent="clearForm">Заново</button>
+			</template>
+			<template v-else>
+				<error-message v-if="isIncorrect">
+					Вы некорректно заполнили анкету
+				</error-message>
+				<tab-list>
+					<tab-tab v-for="tab in tabs" v-bind:current-page="tab.id === page" v-bind:page-id="tab.id" v-on:click="setPage">
+						{{tab.name}}
+					</tab-tab>
+				</tab-list>
+				<form>
+					<div v-show="page === 0">
+						<input-text v-model="formData.lastName" id="input-last-name" name="Фамилия" required></input-text>
+						<input-text v-model="formData.firstName" id="input-first-name" name="Имя" required></input-text>
+						<input-text v-model="formData.middleName" id="input-middle-name" name="Отчество"></input-text>
+						<input-select v-model="formData.gender" id="input-gender" name="Пол" required v-bind:values="[{name: 'male', text: 'Мужской'},{name: 'female', text: 'Женский'}]"></input-select>
+						<input-text v-model="formData.birthDate" id="input-birth-date" name="Дата рождения" required placeholder="ДД.ММ.ГГГГ"></input-text>
+						<input-textarea v-model="formData.birthPlace" id="input-birth-place" name="Место рождения" required></input-textarea>
+						<input-select v-model="formData.citizenship" id="input-citizenship" name="Гражданство" required v-bind:values="[{name: 'russian', text: 'Гражданин РФ'}, {name: 'foreign', text: 'Гражданин другой страны'}]"></input-select>
+						<input-text v-model="formData.country" id="input-country" name="Название страны" v-bind:required="formData.citizenship === 'foreign'" v-show="formData.citizenship === 'foreign'"></input-text>
+					</div>
+					<div v-show="page === 1">
+						<input-select v-model="formData.documentType" id="input-document-type" name="Вид документа" required v-bind:values="[{name: 'russian', text: 'Паспорт гражданина РФ'}, {name: 'foreign', text: 'Паспорт гражданина иностранного государства'}]"></input-select>
+						<input-text v-model="formData.passportBatch" id="input-passport-batch" name="Серия" required></input-text>
+						<input-text v-model="formData.passportNumber" id="input-passport-number" name="Номер" required></input-text>
+						<input-text v-model="formData.passportDate" id="input-passport-date" name="Дата выдачи" required placeholder="ДД.ММ.ГГГГ"></input-text>
+						<input-textarea v-model="formData.passportIssuer" id="input-passport-issuer" name="Орган, выдавший документ (как в паспорте)" required></input-textarea>
+					</div>
+					<div v-show="page === 2">
+						<h3>Адрес по паспорту</h3>
+						<input-select v-model="formData.addressPassportCountry" id="input-address-passport-country" name="Страна" v-bind:values="[{name: 'russia', text: 'Российская Федерация'},{name: 'other', text: 'Другая'}]"></input-select>
+						<input-text v-model="formData.addressPassportCountryName" id="input-address-passport-country-name" name="Название страны" v-bind:required="formData.addressPassportCountry === 'other'" v-show="formData.addressPassportCountry === 'other'"></input-text>
+						<input-text v-model="formData.addressPassportCity" id="input-address-passport-city" name="Населенный пункт"></input-text>
+						<input-text v-model="formData.addressPassportStreet" id="input-address-passport-street" name="Улица"></input-text>
+						<input-text v-model="formData.addressPassportBuilding" id="input-address-passport-building" name="Номер дома"></input-text>
+						<input-text v-model="formData.addressPassportCorp" id="input-address-passport-corp" name="Корпус"></input-text>
+						<input-text v-model="formData.addressPassportApartment" id="input-address-passport-apartment" name="Квартира"></input-text>
+						<input-text v-model="formData.addressPassportIndex" id="input-address-passport-index" name="Индекс"></input-text>
+						<h3>Фактический адрес</h3>
+						<input-select v-model="formData.copyAddress" id="input-copy-address" name="Скопировать из адреса по паспорту" v-bind:values="[{name: 'yes', text: 'Да'},{name: 'no', text: 'Нет'}]"></input-select>
+						<template v-if="formData.copyAddress === 'no'">
+							<input-select v-model="formData.addressRealCountry" id="input-address-real-country" name="Страна" v-bind:values="[{name: 'russia', text: 'Российская Федерация'},{name: 'other', text: 'Другая'}]"></input-select>
+							<input-text v-model="formData.addressRealCountryName" id="input-address-real-country-name" name="Название страны" v-bind:required="formData.addressRealCountry === 'other'" v-show="formData.addressRealCountry === 'other'"></input-text>
+							<input-text v-model="formData.addressRealCity" id="input-address-real-city" name="Населенный пункт"></input-text>
+							<input-text v-model="formData.addressRealStreet" id="input-address-real-street" name="Улица"></input-text>
+							<input-text v-model="formData.addressRealBuilding" id="input-address-real-building" name="Номер дома"></input-text>
+							<input-text v-model="formData.addressRealCorp" id="input-address-real-corp" name="Корпус"></input-text>
+							<input-text v-model="formData.addressRealApartment" id="input-address-real-apartment" name="Квартира"></input-text>
+							<input-text v-model="formData.addressRealIndex" id="input-address-real-index" name="Индекс"></input-text>
+						</template>
+					</div>
+					<div v-show="page === 3">
+						<input-select v-model="formData.education" id="input-education" name="Тип учебного заведения" required v-bind:values="[{name: 'school', text: 'Школа'},{name: 'gymnasium', text: 'Гимназия'},{name: 'lyceum', text: 'Лицей'},{name: 'technicalCollege', text: 'Техникум'},{name: 'academy', text: 'Высшее учебное заведение'},{name: 'other', text: 'Другое'}]"></input-select>
+						<input-select v-model="formData.educationCountry" id="input-education-country" name="Страна" required v-bind:values="[{name: 'russia', text: 'Российская Федерация'},{name: 'other', text: 'Другая'}]"></input-select>
+						<input-text v-model="formData.educationCountryName" id="input-education-country-name" name="Название страны" v-bind:required="formData.educationCountryName === 'other'" v-show="formData.educationCountryName === 'other'"></input-text>
+						<input-text v-model="formData.addressPassportCity" id="input-address-passport-city" name="Населенный пункт" required></input-text>
+						<input-text v-model="formData.institutionName" id="input-institution-name" name="Название учебного заведения" required></input-text>
+						<input-select v-model="formData.graduationYear" id="input-graduation-year" name="Год окончания" required v-bind:values="getYears()"></input-select>
+						<input-multiple v-model="formData.languages" id="input-languages" name="Иностранные языки" v-bind:values="[{name: 'english', text: 'Английский'},{name: 'german', text: 'Немецкий'}, {name: 'japanese', text: 'Японский'}]"></input-multiple>
+					</div>
+					<div v-show="page === 4">
+						<template v-for="s in specCount">
+							<input-select v-model="formData.spec[s-1].trainingProgram" v-bind:id="`input-training-program-${s-1}`" name="Программа" required v-bind:values="[{name: 'college', text: 'Колледж'},{name: 'bachelor', text: 'Бакалавриат'},{name: 'specialist', text: 'Специалитет'},{name: 'master', text: 'Магистратура'},{name: 'graduate', text: 'Аспирантура'}]"></input-select>
+							<input-select v-model="formData.spec[s-1].specialty" v-bind:id="`input-specialty-${s-1}`" name="Специальность" required v-bind:values="[{name: 'none', text: '–'}]"></input-select>
+							<input-select v-model="formData.spec[s-1].faculty" v-bind:id="`input-faculty-${s-1}`" name="Факультет" required v-bind:values="[{name: 'foreignLanguage', text: 'Иностранных языков'},{name: 'design', text: 'Дизайна'},{name: 'intelligentTechnicalSystems', text: 'Интеллектуальные технические системы'}]"></input-select>
+							<input-select v-model="formData.spec[s-1].qualification" v-bind:id="`input-qualification-${s-1}`" name="Квалификация" required v-bind:values="[{name: '1', text: 'Техник'},{name: 'design', text: 'Бакалавр'},{name: '2', text: 'Специалист'},{name: '3', text: 'Магистр'},{name: '4', text: 'Кандидат наук'}]"></input-select>
+							<input-select v-model="formData.spec[s-1].specialization" v-bind:id="`input-specialization-${s-1}`" name="Направленность" required v-bind:values="[{name: 'none1', text: '–'}]"></input-select>
+							<input-select v-model="formData.spec[s-1].educationForm" v-bind:id="`input-educationForm-${s-1}`" name="Форма обучения" required v-bind:values="[{name: '11', text: 'Очная'},{name: '22', text: 'Заочная'},{name: '33', text: 'Очно-заочная'}]"></input-select>
+							<input-select v-model="formData.spec[s-1].payment" v-bind:id="`input-payment-${s-1}`" name="Источник финансирования" required v-bind:values="[{name: '111', text: 'Бюджет'},{name: '222', text: 'Платное'}]"></input-select>
+							<br>
+							<br>
+						</template>
+						<button class="center" v-on:click.prevent="addSpec">Добавить направление</button>
+					</div>
+					<div class="main-buttons">
+						<button v-on:click.prevent="clearForm">Очистить</button>
+						<input v-on:click.prevent="onSubmit" type="submit" value="Отправить">
+					</div>
+				</form>
+			</template>
+		</div>
+	</body>
+</html>
